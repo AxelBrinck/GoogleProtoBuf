@@ -1,63 +1,37 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 
 namespace  FileArray
 {
-    public class StreamArray<T> : IEnumerable<T>
+    public class StreamArray/*<T> where T : ISerializable*/
     {
         private readonly Stream _stream;
-
+        private static readonly int BufferSize = 512 * 1024;
+        private readonly byte[] buffer = new byte[BufferSize];
+        private long _position =  0;
+        private readonly long _length;
+        
+        /// <summary>
+        /// Instantiates by providing a stream.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
         public StreamArray(Stream stream)
         {
             _stream = stream;
+            _length = _stream.Length;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public int Read()
         {
-            return new StreamArrayEnumerator<T>(_stream);
-        }
+            if (_position == _length) return 0;
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            int bytesToRead = _length - _position < BufferSize ? (int) (_length - _position) : BufferSize;
+            
+            int bytesRead = _stream.Read(buffer, 0, bytesToRead);
+
+            _position += bytesRead;
+
+            return bytesRead;
         }
     }
 
-    public class StreamArrayEnumerator<T> : IEnumerator<T>
-    {
-        private static readonly int BufferSize = 1024 * 1024;
-        private readonly Stream _stream;
-        private byte[] _buffer = new byte[BufferSize];
-
-        public long CurrentPosition { get; private set; } = -1;
-
-        public T Current { get; private set; } = default(T);
-
-        public StreamArrayEnumerator(Stream stream)
-        {
-            _stream = stream;
-            stream.Read(_buffer, 0, BufferSize);
-        }
-
-        object IEnumerator.Current => throw new NotImplementedException();
-
-        public void Dispose()
-        {
-            _stream.Flush();
-            _stream.Close();
-            _stream.Dispose();
-        }
-
-        public bool MoveNext()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reset()
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

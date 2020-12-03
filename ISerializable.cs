@@ -1,6 +1,6 @@
 namespace FileArray
 {
-    public interface ICustomSerializable
+    public interface ISerializable
     {
         int SerialLength { get; }
 
