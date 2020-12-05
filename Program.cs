@@ -8,8 +8,7 @@ namespace FileArray
     class Program
     {
         private static readonly string FileName = "data.bin";
-        private static readonly int TotalUpdatesInPack = 1;
-        private static readonly int TotalPacks = 1;
+        private static readonly int TotalUpdates = 3500 * 500;
 
         private static readonly Chronometer Chrono = new Chronometer();
 
@@ -22,52 +21,51 @@ namespace FileArray
             using(var stream = File.OpenWrite(FileName))
             {
 
-                for (var packId = 0; packId < TotalPacks; packId++)
+                for (var packId = 0; packId < TotalUpdates; packId++)
                 {
-                    var pack = new PricePack();
-                    for (var i = 0; i < TotalUpdatesInPack; i++)
-                    {
-                        var update = new PriceUpdate();
+                    var update = new PriceUpdate();
 
-                        update.Open = 13232324.43434344m;
-                        update.Close = 32325.92121211m;
-                        update.High = 76439.385994m;
-                        update.Low = 69m;
-                        update.CloseTime = DateTime.Now;
-                        update.OpenTime = DateTime.Now;
-                        update.BaseVolume = 23873924.8327398m;
-                        update.QuoteVolume = 2329329.589594M;
-                        update.TakerBuyBaseVolume = 2337328.43894493m;
-                        update.TakerBuyQuoteVolume = 73283723.483934893m;
-                        update.TradeCount = 7328;
+                    update.Open = 13232324.43434344m;
+                    update.Close = 32325.92121211m;
+                    update.High = 76439.385994m;
+                    update.Low = 69m;
+                    update.CloseTime = DateTime.Now;
+                    update.OpenTime = DateTime.Now;
+                    update.BaseVolume = 23873924.8327398m;
+                    update.QuoteVolume = 2329.329589594M;
+                    update.TakerBuyBaseVolume = 2337328.43894493m;
+                    update.TakerBuyQuoteVolume = 73283723.483934893m;
+                    update.TradeCount = 7328;
 
-                        pack.Updates.Add(update);
-                    }
-
-                    Serializer.Serialize<PricePack>(stream, pack);
+                    Serializer.SerializeWithLengthPrefix<PriceUpdate>(stream, update, PrefixStyle.Base128, 1);
                 }
                 
             }
             Chrono.End();
 
-            var totalBytesWritten = new FileInfo(FileName).Length;
+            var totalBytes = new FileInfo(FileName).Length;
             var elapsedTime = Chrono.GetDuration();
-            var megaBytes = (float) totalBytesWritten / 1024 / 1024;
-            Console.WriteLine($"Speed: {megaBytes / elapsedTime.TotalSeconds:0.000}Mb/s. Bytes read: {totalBytesWritten} bytes.");
+            var megaBytes = (float) totalBytes / 1024 / 1024;
+            Console.WriteLine($"Write Speed: {megaBytes / elapsedTime.TotalSeconds:0.000}Mb/s. Total: {totalBytes} bytes.");
 
             // Deserialize
+            Chrono.Start();
             using(var stream = File.OpenRead(FileName))
             {
-                PricePack pack = null;
+                PriceUpdate pack = null;
 
                 do
                 {
-                    Console.Write("-");
-                    pack = Serializer.Deserialize<PricePack>(stream);
-                    Console.Write(".");
+                    pack = (PriceUpdate) Serializer.DeserializeWithLengthPrefix<PriceUpdate>(stream, PrefixStyle.Base128, 1);
                 }
-                while (pack != null);
+                while (stream.Position < stream.Length);
             }
+            Chrono.End();
+
+            totalBytes = new FileInfo(FileName).Length;
+            elapsedTime = Chrono.GetDuration();
+            megaBytes = (float) totalBytes / 1024 / 1024;
+            Console.WriteLine($"Read Speed: {megaBytes / elapsedTime.TotalSeconds:0.000}Mb/s. Total: {totalBytes} bytes.");
         }
     }
 }
