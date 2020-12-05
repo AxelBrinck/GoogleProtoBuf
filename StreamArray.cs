@@ -5,7 +5,7 @@ namespace  FileArray
     public class StreamArray/*<T> where T : ISerializable*/
     {
         private readonly Stream _stream;
-        private static readonly int BufferSize = 512 * 1024;
+        private static readonly int BufferSize = 72;
         private readonly byte[] buffer = new byte[BufferSize];
         private long _position =  0;
         private readonly long _length;
