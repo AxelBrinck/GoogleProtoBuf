@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ProtoBuf;
 
-namespace StreamArray
+namespace ProtobufExample
 {
     class Program
     {

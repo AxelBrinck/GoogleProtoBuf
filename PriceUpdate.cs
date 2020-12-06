@@ -1,7 +1,7 @@
 using System;
 using ProtoBuf;
 
-namespace StreamArray
+namespace ProtobufExample
 {
     [ProtoContract]
     public record PriceUpdate

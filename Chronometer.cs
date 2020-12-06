@@ -1,6 +1,6 @@
 using System;
 
-namespace StreamArray
+namespace ProtobufExample
 {
     public class Chronometer
     {

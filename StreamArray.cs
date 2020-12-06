@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace  StreamArray
+namespace  ProtobufExample
 {
     public class StreamArray/*<T> where T : ISerializable*/
     {
