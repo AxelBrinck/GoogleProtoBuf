@@ -5,8 +5,10 @@ In this repository I am performing a very basic example with a benchmark.
 
 ## Results
 
-The IO speed is NOT amazing, yet it was very fast. It was not what I was expecting.
+The IO speed is below-average.
 
-My hard-drive has a maximum reading capability for about 400Mb/s, using ProtoBuf I was able to read in a struct at a rate of 30Mb per second. I tried serializing lists and arrays but I could not speed up the reading.
+My hard-drive has a maximum reading capability for about 750Mb/s, using ProtoBuf I was able to read in a struct at a rate of 31Mb per second (in release build). I tried serializing lists and arrays but I could not speed up the reading.
 
-On the good side, it is VERY easy to use and space efficient (unlike XML serialization). Definetly something to consider to speed up the development process for a heavy IO project.
+One work around would be separating the reading and the struct generation in threads.
+
+On the good side, it is very easy to use, safe, and space efficient (unlike XML serialization). Definetly something to consider to speed up the development process for a heavy IO project.
