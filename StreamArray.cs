@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace  FileArray
+namespace  StreamArray
 {
     public class StreamArray/*<T> where T : ISerializable*/
     {

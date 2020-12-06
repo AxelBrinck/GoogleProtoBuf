@@ -1,7 +1,7 @@
 using System;
 using ProtoBuf;
 
-namespace FileArray
+namespace StreamArray
 {
     [ProtoContract]
     public record PriceUpdate
